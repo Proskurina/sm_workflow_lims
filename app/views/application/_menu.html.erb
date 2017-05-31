@@ -21,6 +21,9 @@
 
             <div class="collapse navbar-collapse" id="sm_workflow_menu">
               <ul class="nav navbar-nav navbar-right">
+                <li class="btn btn-default">
+                   <%= select_tag "flow", options_from_collection_for_select(presenter.flows, "id", "name", presenter.try(:flow_id)), onchange: "javascript:location.href = /flows/ + this.value;", prompt: 'Select flow' %>
+                </li>
                 <li class="dropdown"><a href="#"
                   class="dropdown-toggle" data-toggle="dropdown">New Batch <b class="caret"></b>
                 </a>
@@ -29,10 +32,12 @@
                       <li><a data-toggle="tab" href="/batches/new#<%= asset_type.template_name %>-template"><%= asset_type.name %></a></li>
                     <% end %>
                   </ul></li>
-                <li><a href="/assets?state=in_progress">In Progress</a></li>
-                <li><a href="/assets?state=volume_check">Volume check</a></li>
-                <li><a href="/assets?state=quant">Quant</a></li>
-                <li><a href="/assets?state=report_required">Report Required</a></li>
+                <%if presenter.flow_id.present?%>
+                  <li> <%= link_to 'In Progress', flow_assets_path(presenter.flow_id, state: 'in_progress') %> </li>
+                  <li> <%= link_to 'Volume check', flow_assets_path(presenter.flow_id, state: 'volume_check') %> </li>
+                  <li> <%= link_to 'Quant', flow_assets_path(presenter.flow_id, state: 'quant') %> </li>
+                  <li> <%= link_to 'Report Required', flow_assets_path(presenter.flow_id, state: 'report_required') %> </li>
+                <%end%>
                 <li><a href="/admin">Admin</a></li>
                 <li>
                   <form class="navbar-form navbar-right" role="search" method="GET" action="/assets">

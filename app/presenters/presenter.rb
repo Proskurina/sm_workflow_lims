@@ -35,7 +35,7 @@ class Presenter
     end
 
     def each_workflow
-      Workflow.all.includes(:initial_state).each do |workflow|
+      Workflow.all.includes(:flow, flow: :initial_state).each do |workflow|
         yield(workflow.name, workflow.has_comment, workflow.id, workflow.reportable, workflow.multi_team_quant_essential, workflow.turn_around_days)
       end
     end
@@ -50,6 +50,13 @@ class Presenter
       CostCode.all.each do |cost_code|
         yield cost_code.name, cost_code.id
       end
+    end
+
+    def flows
+      @flows ||= Flow.all
+    end
+
+    def flow_id
     end
 
   end

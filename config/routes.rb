@@ -5,7 +5,10 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'batches#new'
 
-  resources :assets, only: [:index]
+  resources :flows, only: [:show] do
+    resources :assets, only: [:index]
+  end
+
   get 'assets/update'
 
   resources :batches, except: [:index, :edit]

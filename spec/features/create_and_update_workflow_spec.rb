@@ -3,8 +3,11 @@ require 'rails_helper'
 
 feature 'can create workflow', js: true do
 
+  let!(:in_progress) { create :state, name: 'in_progress' }
+  let!(:flow) { create :sample_management_flow }
+
   scenario 'can create workflow' do
-    create :state, name: 'in_progress'
+
     visit '/'
     click_on 'Admin'
     find("a", text: "Create a new workflow").click

@@ -4,13 +4,18 @@ require './app/presenters/asset/asset'
 module Presenter::AssetPresenter
   class Index < Presenter
 
-    attr_reader :search, :assets, :total
+    attr_reader :search, :assets, :total, :flow
 
-    def initialize(found_assets,search=nil,state=nil)
+    def initialize(found_assets, flow, search=nil,state=nil)
       @assets = found_assets.group_by {|a| a.asset_type.name}.tap {|h| h.default = [] }
       @total  = found_assets.length
       @search = search
       @state  = state.name if state
+      @flow = flow
+    end
+
+    def flow_id
+      flow.id
     end
 
     def asset_identifiers

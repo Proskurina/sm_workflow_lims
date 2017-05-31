@@ -27,9 +27,11 @@ class Asset < ActiveRecord::Base
     comment.destroy
   end
 
-  def self.in_state(state)
+  def self.in_state(state, flow)
     if state.present?
+      joins(:workflow).
       joins(:events)
+        .where(workflows: {flow_id: flow.id})
         .merge(Event.with_last_state(state))
         .order(batch_id: :asc)
     else
