@@ -21,7 +21,7 @@ class Asset < ActiveRecord::Base
   validates_presence_of :workflow, :batch, :identifier, :asset_type
 
   delegate :identifier_type, to: :asset_type
-  default_scope { includes(:workflow,:asset_type,:comment,:batch, :pipeline_destination, events: :state) }
+  default_scope { preload(:workflow,:asset_type,:comment,:batch, :pipeline_destination, events: :state) }
 
   def remove_comment
     comment.destroy
@@ -29,8 +29,8 @@ class Asset < ActiveRecord::Base
 
   def self.in_state(state, flow)
     if state.present?
-      joins(:workflow).
-      joins(:events)
+      joins(:workflow)
+      .joins(:events)
         .where(workflows: {flow_id: flow.id})
         .merge(Event.with_last_state(state))
         .order(batch_id: :asc)
