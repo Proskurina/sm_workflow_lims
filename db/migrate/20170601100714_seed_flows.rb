@@ -6,6 +6,7 @@ class SeedFlows < ActiveRecord::Migration
   end
 
   def down
+    FlowState.destroy_all
     Flow.destroy_all
   end
 end

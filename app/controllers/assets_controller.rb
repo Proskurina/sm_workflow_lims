@@ -7,7 +7,7 @@ class AssetsController < ApplicationController
     if assets_provided
       updater = Asset::Updater.create!(assets: assets_to_be_updated, action: params[:asset_action])
       flash[updater.flash_status] = updater.message
-      redirect_to assets_path(state: updater.redirect_state)
+      redirect_to flow_assets_path(flow, state: updater.redirect_state)
     else
       flash[:error] = 'No assets selected'
       redirect_to :back
@@ -15,8 +15,8 @@ class AssetsController < ApplicationController
   end
 
   def index
-    if params[:state].nil? && params[:identifier].nil?
-      redirect_to assets_path(state: 'in_progress')
+    unless params[:state].present? || params[:identifier].present?
+      redirect_to root_path
     else
       assets = Asset.in_state(state, flow)
                     .with_identifier(params[:identifier])

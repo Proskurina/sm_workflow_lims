@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     resources :assets, only: [:index]
   end
 
+  resources :assets, only: [:index]
   get 'assets/update'
 
   resources :batches, except: [:index, :edit]

@@ -1,11 +1,20 @@
 class Flow < ActiveRecord::Base
-  belongs_to :initial_state, class_name: 'State'
+
   has_many :workflows
-  validates_presence_of :name, :initial_state
+  validates_presence_of :name
 
-  attr_accessor :initial_state_name
+  has_many :flow_states
+  has_many :states, through: :flow_states
 
-  def initial_state_name=(initial_state_name)
-    self.initial_state = State.find_by(name: initial_state_name)
+  attr_accessor :states_names
+
+  def states_names=(states_names)
+    states_names.each do |state_name|
+      states << State.find_by(name: state_name)
+    end
+  end
+
+  def initial_state
+    states.first
   end
 end

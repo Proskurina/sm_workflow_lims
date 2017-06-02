@@ -131,14 +131,13 @@ describe Asset do
 
   context 'in_state' do
 
-    let!(:state) { create :state, name: 'in_progress' }
-    # let!(:reportable_workflow)    { Workflow.create!(name:'reportable',    reportable:true, initial_state_name: 'in_progress' ) }
-    # let!(:nonreportable_workflow) { Workflow.create!(name:'nonreportable', reportable:false, initial_state_name: 'in_progress' ) }
+    let!(:reportable_workflow)    { create :workflow_reportable, name: 'reportable' }
+    let!(:nonreportable_workflow) { create :workflow, name:'nonreportable' }
     let!(:in_progress) { create :state, name: 'in_progress' }
     let!(:completed) { create :state, name: 'completed' }
     let!(:report_required) { create :state, name: 'report_required' }
     let!(:reported) { create :state, name: 'reported' }
-
+    let!(:flow) { Flow.find_or_create_by(name: 'Sample management') }
     let(:basics) { { identifier:'one', asset_type_id: 1, batch_id: 1, workflow_id: reportable_workflow.id } }
 
     it 'in_progress filters on last event' do
@@ -146,12 +145,12 @@ describe Asset do
       completed = create :asset
       completed.complete
 
-      Asset.in_state(in_progress).should include(incomplete)
-      Asset.in_state(in_progress).should_not include(completed)
+      Asset.in_state(in_progress, flow).should include(incomplete)
+      Asset.in_state(in_progress, flow).should_not include(completed)
     end
 
     it 'should return all if scope nil' do
-      expect(Asset.in_state(nil)).to eq(Asset.all)
+      expect(Asset.in_state(nil, nil)).to eq(Asset.all)
     end
 
     it 'reporting_required lists appropriate assets' do
@@ -167,10 +166,10 @@ describe Asset do
       asset_reported_reportable.complete
       asset_reported_reportable.report
 
-      Asset.in_state(report_required).should     include(asset_completed_reportable)
-      Asset.in_state(report_required).should_not include(asset_incomplete_reportable)
-      Asset.in_state(report_required).should_not include(asset_completed_nonreportable)
-      Asset.in_state(report_required).should_not include(asset_reported_reportable)
+      Asset.in_state(report_required, flow).should     include(asset_completed_reportable)
+      Asset.in_state(report_required, flow).should_not include(asset_incomplete_reportable)
+      Asset.in_state(report_required, flow).should_not include(asset_completed_nonreportable)
+      Asset.in_state(report_required, flow).should_not include(asset_reported_reportable)
     end
 
   end

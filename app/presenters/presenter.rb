@@ -35,8 +35,8 @@ class Presenter
     end
 
     def each_workflow
-      Workflow.all.includes(:flow, flow: :initial_state).each do |workflow|
-        yield(workflow.name, workflow.has_comment, workflow.id, workflow.reportable, workflow.multi_team_quant_essential, workflow.turn_around_days)
+      Workflow.all.includes(:flow, flow: :states).each do |workflow|
+        yield(workflow.name, workflow.has_comment, workflow.id, workflow.reportable, workflow.multi_team_quant_essential?, workflow.turn_around_days)
       end
     end
 
@@ -57,6 +57,9 @@ class Presenter
     end
 
     def flow_id
+    end
+
+    def flow
     end
 
   end

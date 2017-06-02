@@ -15,7 +15,7 @@ module Presenter::AssetPresenter
     end
 
     def flow_id
-      flow.id
+      flow.id if flow.present?
     end
 
     def asset_identifiers

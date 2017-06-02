@@ -6,6 +6,7 @@ feature 'create complete and report assets within standard flow', js: true do
   let!(:asset_type) { create(:asset_type, name: 'Tube', identifier_type: 'ID') }
   let!(:workflow1) { create(:workflow, name: 'Workflow') }
   let!(:workflow2) { create(:workflow_reportable, name: 'Reportable workflow') }
+  let!(:workflow3) { create(:multi_team_workflow, name: 'Multi team') }
   let!(:in_progress) { create :state, name: 'in_progress' }
   let!(:volume_check) { create :state, name: 'volume_check' }
   let!(:quant) { create :state, name: 'quant' }
@@ -30,17 +31,23 @@ feature 'create complete and report assets within standard flow', js: true do
     select('Workflow', from: 'Workflow')
     click_on 'Save'
     expect(page).to have_content "The batch was created."
-    click_on 'In Progress'
+    click_on 'Sample management'
+    click_on 'In progress'
     expect(page).to have_selector('table tr', count: 2)
     check "assets[#{Asset.first.id}]"
     click_on 'Completed selected'
     expect(page).to have_content "In progress is done for 123"
     expect(page).not_to have_selector('table tr')
+    expect(page).not_to have_content 'Volume check'
+    expect(page).not_to have_content 'Quant'
+    click_on 'Report required'
+    expect(page).not_to have_selector('table tr')
+    click_on 'Multi team quant essential'
     click_on 'Volume check'
     expect(page).not_to have_selector('table tr')
     click_on 'Quant'
     expect(page).not_to have_selector('table tr')
-    click_on 'Report Required'
+    click_on 'Report required'
     expect(page).not_to have_selector('table tr')
   end
 
@@ -66,21 +73,25 @@ feature 'create complete and report assets within standard flow', js: true do
     select('Reportable workflow', from: 'Workflow')
     click_on 'Save'
     expect(page).to have_content "The batch was created."
-    click_on 'In Progress'
+    click_on 'Sample management'
+    click_on 'In progress'
     expect(page).to have_selector('table tr', count: 4)
     check "assets[#{Asset.second.id}]"
     click_on 'Completed selected'
     expect(page).to have_content "In progress is done for 456"
     expect(page).to have_selector('table tr', count: 3)
-    click_on 'Volume check'
-    expect(page).not_to have_selector('table tr')
-    click_on 'Quant'
-    expect(page).not_to have_selector('table tr')
-    click_on 'Report Required'
+    click_on 'Report required'
     expect(page).to have_selector('table tr', count: 2)
     check "assets[#{Asset.second.id}]"
     click_on 'Reported selected'
     expect(page).to have_content "Report required is done for 456"
+    click_on 'Multi team quant essential'
+    click_on 'Volume check'
+    expect(page).not_to have_selector('table tr')
+    click_on 'Quant'
+    expect(page).not_to have_selector('table tr')
+    click_on 'Report required'
+    expect(page).not_to have_selector('table tr')
   end
 
 end

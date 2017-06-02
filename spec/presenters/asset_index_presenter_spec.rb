@@ -12,7 +12,8 @@ describe Presenter::AssetPresenter::Index do
     let(:asset2) { double('asset_2',identifier:'asset_2',asset_type:mock_type2,workflow:mock_workflow,study:'study') }
     let(:assets) { [asset1,asset2] }
     let!(:state) { create :state, name: 'in_progress'}
-    let(:presenter) { Presenter::AssetPresenter::Index.new(assets,search,state)}
+    let!(:flow) { create :sample_management_flow}
+    let(:presenter) { Presenter::AssetPresenter::Index.new(assets,flow,search,state)}
   end
 
   shared_examples "standard behaviour" do

@@ -39,7 +39,7 @@ module Presenter::BatchPresenter
 
     def prohibited_workflow(reportable, multi_team_quant_essential)
       if workflow.present?
-        (workflow.reportable != reportable) || (workflow.multi_team_quant_essential != multi_team_quant_essential)
+        (workflow.reportable != reportable) || (workflow.multi_team_quant_essential? != multi_team_quant_essential)
       end
     end
 
