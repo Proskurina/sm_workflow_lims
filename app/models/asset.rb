@@ -2,7 +2,8 @@ require './lib/client_side_validations'
 
 class Asset < ActiveRecord::Base
 
-  include StateMachine
+  include StageMachine
+  include ClientSideValidations
 
   belongs_to :asset_type
   belongs_to :workflow
@@ -16,21 +17,20 @@ class Asset < ActiveRecord::Base
   after_create :create_initial_event
   after_destroy :remove_comment, :if => :comment
 
-  include ClientSideValidations
   validate_with_regexp :study, :with => /^\w+$/
   validates_presence_of :workflow, :batch, :identifier, :asset_type
 
   delegate :identifier_type, to: :asset_type
-  default_scope { includes(:workflow,:asset_type,:comment,:batch, :pipeline_destination, events: :state) }
+  default_scope { includes(:workflow,:asset_type,:comment,:batch, :pipeline_destination, events: :stage) }
 
   def remove_comment
     comment.destroy
   end
 
-  def self.in_state(state)
-    if state.present?
+  def self.in_stage(stage)
+    if stage.present?
       joins(:events)
-        .merge(Event.with_last_state(state))
+        .merge(Event.with_last_stage(stage))
         .order(batch_id: :asc)
     else
       all
@@ -74,7 +74,7 @@ class Asset < ActiveRecord::Base
   end
 
   def completed_at
-    events.detect { |event| event.state.name == 'completed' }.try(:created_at)
+    events.detect { |event| event.stage.name == 'completed' }.try(:created_at)
   end
 
   def age
@@ -88,11 +88,11 @@ class Asset < ActiveRecord::Base
   end
 
   def create_initial_event
-    events.create!(state: workflow.initial_state, created_at: begun_at)
+    events.create!(stage: workflow.initial_stage, created_at: begun_at)
   end
 
   class AssetAction
-    attr_reader :action, :assets, :flash_status, :asset_state
+    attr_reader :action, :assets, :flash_status, :asset_stage
 
     def self.create!(*args)
       self.new(*args).tap {|action| action.do! }
@@ -101,7 +101,7 @@ class Asset < ActiveRecord::Base
     def initialize(action:,assets:)
       @action = action
       @assets = assets
-      @asset_state = assets.first.current_state
+      @asset_stage = assets.first.current_stage
       @flash_status = :alert
     end
 
@@ -127,11 +127,11 @@ class Asset < ActiveRecord::Base
     end
 
     def message
-      done? ? "#{asset_state.humanize} is done for #{identifiers.to_sentence}" :
-              "#{asset_state.humanize} has not been finished for requested assets."
+      done? ? "#{asset_stage.humanize} is done for #{identifiers.to_sentence}" :
+              "#{asset_stage.humanize} has not been finished for requested assets."
     end
 
-    def redirect_state; asset_state; end
+    def redirect_stage; asset_stage; end
   end
 
 end

@@ -6,12 +6,12 @@ feature 'create complete and report assets within multi team flow', js: true do
   let!(:asset_type) { create(:asset_type, name: 'Tube', identifier_type: 'ID') }
   let!(:workflow1) { create(:multi_team_workflow, name: 'Multi team workflow') }
   let!(:workflow2) { create(:multi_team_workflow_reportable, name: 'Reportable multi team workflow') }
-  let!(:in_progress) { create :state, name: 'in_progress' }
-  let!(:volume_check) { create :state, name: 'volume_check' }
-  let!(:quant) { create :state, name: 'quant' }
-  let!(:report_required) { create :state, name: 'report_required' }
-  let!(:completed) { create :state, name: 'completed' }
-  let!(:reported) { create :state, name: 'reported' }
+  let!(:in_progress) { create :stage, name: 'in_progress' }
+  let!(:volume_check) { create :stage, name: 'volume_check' }
+  let!(:quant) { create :stage, name: 'quant' }
+  let!(:report_required) { create :stage, name: 'report_required' }
+  let!(:completed) { create :stage, name: 'completed' }
+  let!(:reported) { create :stage, name: 'reported' }
 
   scenario 'can create and complete a non-reportable asset' do
     visit '/'

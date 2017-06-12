@@ -18,7 +18,7 @@ describe Batch::Updater do
   end
 
   it 'should create the right batch and the right assets' do
-    state = create :state, name: 'in_progress'
+    stage = create :stage, name: 'in_progress'
     workflow = create :workflow, name: 'New workflow'
     batch = create :batch_with_assets
     batch_updater = Batch::Updater.new(

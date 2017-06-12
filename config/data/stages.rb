@@ -1,5 +1,5 @@
-module StateFactory
-  def self.states
+module StageFactory
+  def self.stages
     [
       {name: 'in_progress'},
       {name: 'volume_check'},
@@ -11,7 +11,7 @@ module StateFactory
   end
 
   def self.seed
-    State.create!(states)
+    Stage.create!(stages)
   end
 
 end

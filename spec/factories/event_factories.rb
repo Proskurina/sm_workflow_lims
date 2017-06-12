@@ -2,7 +2,7 @@ FactoryGirl.define do
 
   factory :event do
     asset
-    state
+    stage
   end
 
 end

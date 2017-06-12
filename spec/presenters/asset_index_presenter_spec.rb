@@ -11,8 +11,8 @@ describe Presenter::AssetPresenter::Index do
     let(:asset1) { double('asset_1',identifier:'asset_1',asset_type:mock_type,workflow:mock_workflow,study:'study') }
     let(:asset2) { double('asset_2',identifier:'asset_2',asset_type:mock_type2,workflow:mock_workflow,study:'study') }
     let(:assets) { [asset1,asset2] }
-    let!(:state) { create :state, name: 'in_progress'}
-    let(:presenter) { Presenter::AssetPresenter::Index.new(assets,search,state)}
+    let!(:stage) { create :stage, name: 'in_progress'}
+    let(:presenter) { Presenter::AssetPresenter::Index.new(assets,search,stage)}
   end
 
   shared_examples "standard behaviour" do
@@ -63,20 +63,20 @@ describe Presenter::AssetPresenter::Index do
 
   end
 
-  context "when state is" do
+  context "when stage is" do
 
     include_examples "shared mocks"
     let(:search) {nil}
 
     context 'all' do
-      let(:state)  { nil }
+      let(:stage)  { nil }
 
       it "should have no action button" do
         expect { |b| presenter.action_button(&b) }.not_to yield_control
       end
     end
     context 'in_progress' do
-      let(:state) { create :state, name: 'in_progress'}
+      let(:stage) { create :stage, name: 'in_progress'}
 
       it "should have complete actions" do
         expect { |b| presenter.action_button(&b) }.to yield_with_args('Completed selected')
@@ -84,7 +84,7 @@ describe Presenter::AssetPresenter::Index do
       end
     end
     context 'volume_check' do
-      let(:state)  { create :state, name: 'volume_check'}
+      let(:stage)  { create :stage, name: 'volume_check'}
 
       it "should have volume_check actions" do
         expect { |b| presenter.action_button(&b) }.to yield_with_args('Volume checked selected')
@@ -92,7 +92,7 @@ describe Presenter::AssetPresenter::Index do
       end
     end
     context 'quant' do
-      let(:state)  { create :state, name: 'quant'}
+      let(:stage)  { create :stage, name: 'quant'}
 
       it "should have quant actions" do
         expect { |b| presenter.action_button(&b) }.to yield_with_args('Completed selected')
@@ -100,7 +100,7 @@ describe Presenter::AssetPresenter::Index do
       end
     end
     context 'report_required' do
-      let(:state)  { create :state, name: 'report_required'}
+      let(:stage)  { create :stage, name: 'report_required'}
 
       it "should have reporting actions" do
         expect { |b| presenter.action_button(&b) }.to yield_with_args('Reported selected')

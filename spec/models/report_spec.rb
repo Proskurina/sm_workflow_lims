@@ -18,8 +18,8 @@ describe Report do
 
   context "with valid parameters" do
     let!(:workflow) { create(:workflow, name: "Workflow") }
-    let!(:in_progress) { create :state, name: 'in_progress' }
-    let!(:completed) { create :state, name: 'completed' }
+    let!(:in_progress) { create :stage, name: 'in_progress' }
+    let!(:completed) { create :stage, name: 'completed' }
     let(:asset1) { create :asset, workflow: workflow, study: 'Study1', project: 'Project1' }
     let(:asset2) { create :asset, workflow: workflow, study: 'Study1', project: 'Project2' }
     let(:asset3) { create :asset, workflow: workflow, study: 'Study1', project: 'Project2' }

@@ -11,8 +11,8 @@ describe Asset do
     let!(:batch) { Batch.new }
     let!(:workflow) { create :workflow }
     let!(:comment) { Comment.new }
-    let!(:state) { create :state, name: 'in_progress'}
-    let!(:completed) { create :state, name: 'completed'}
+    let!(:stage) { create :stage, name: 'in_progress'}
+    let!(:completed) { create :stage, name: 'completed'}
     let!(:asset) { Asset.new(
         identifier: identifier,
         batch:      batch,
@@ -40,7 +40,7 @@ describe Asset do
       expect(asset.batch).to eq(batch)
       expect(asset.asset_type).to eq(asset_type)
       expect(asset.workflow).to eq(workflow)
-      expect(asset.current_state).to eq 'in_progress'
+      expect(asset.current_stage).to eq 'in_progress'
 
       asset.begun_at.should eq(asset.created_at)
     end
@@ -60,7 +60,7 @@ describe Asset do
     it 'should know if it is completed' do
       asset.save
       expect(asset.completed?).to be_falsey
-      asset.events << (create :event, asset: asset, state: completed)
+      asset.events << (create :event, asset: asset, stage: completed)
       expect(asset.completed?).to be_truthy
     end
 
@@ -129,15 +129,15 @@ describe Asset do
     end
   end
 
-  context 'in_state' do
+  context 'in_stage' do
 
-    let!(:state) { create :state, name: 'in_progress' }
-    let!(:reportable_workflow)    { Workflow.create!(name:'reportable',    reportable:true, initial_state_name: 'in_progress' ) }
-    let!(:nonreportable_workflow) { Workflow.create!(name:'nonreportable', reportable:false, initial_state_name: 'in_progress' ) }
-    let!(:in_progress) { create :state, name: 'in_progress' }
-    let!(:completed) { create :state, name: 'completed' }
-    let!(:report_required) { create :state, name: 'report_required' }
-    let!(:reported) { create :state, name: 'reported' }
+    let!(:stage) { create :stage, name: 'in_progress' }
+    let!(:reportable_workflow)    { Workflow.create!(name:'reportable',    reportable:true, initial_stage_name: 'in_progress' ) }
+    let!(:nonreportable_workflow) { Workflow.create!(name:'nonreportable', reportable:false, initial_stage_name: 'in_progress' ) }
+    let!(:in_progress) { create :stage, name: 'in_progress' }
+    let!(:completed) { create :stage, name: 'completed' }
+    let!(:report_required) { create :stage, name: 'report_required' }
+    let!(:reported) { create :stage, name: 'reported' }
 
     let(:basics) { { identifier:'one', asset_type_id: 1, batch_id: 1, workflow_id: reportable_workflow.id } }
 
@@ -146,12 +146,12 @@ describe Asset do
       completed = create :asset
       completed.complete
 
-      Asset.in_state(in_progress).should include(incomplete)
-      Asset.in_state(in_progress).should_not include(completed)
+      Asset.in_stage(in_progress).should include(incomplete)
+      Asset.in_stage(in_progress).should_not include(completed)
     end
 
     it 'should return all if scope nil' do
-      expect(Asset.in_state(nil)).to eq(Asset.all)
+      expect(Asset.in_stage(nil)).to eq(Asset.all)
     end
 
     it 'reporting_required lists appropriate assets' do
@@ -167,10 +167,10 @@ describe Asset do
       asset_reported_reportable.complete
       asset_reported_reportable.report
 
-      Asset.in_state(report_required).should     include(asset_completed_reportable)
-      Asset.in_state(report_required).should_not include(asset_incomplete_reportable)
-      Asset.in_state(report_required).should_not include(asset_completed_nonreportable)
-      Asset.in_state(report_required).should_not include(asset_reported_reportable)
+      Asset.in_stage(report_required).should     include(asset_completed_reportable)
+      Asset.in_stage(report_required).should_not include(asset_incomplete_reportable)
+      Asset.in_stage(report_required).should_not include(asset_completed_nonreportable)
+      Asset.in_stage(report_required).should_not include(asset_reported_reportable)
     end
 
   end
@@ -200,14 +200,14 @@ describe Asset do
     end
   end
 
-  context 'state machine' do
-    let!(:state1) { create :state, name: 'in_progress' }
-    let!(:state2) { create :state, name: 'completed' }
-    let!(:state3) { create :state, name: 'report_required' }
+  context 'stage machine' do
+    let!(:stage1) { create :stage, name: 'in_progress' }
+    let!(:stage2) { create :stage, name: 'completed' }
+    let!(:stage3) { create :stage, name: 'report_required' }
     let(:asset) { create :asset }
     let(:reportable_asset) { create :asset, workflow: (create :workflow_reportable) }
 
-    it 'should know the current state' do
+    it 'should know the current stage' do
       expect(asset.in_progress?).to be_truthy
       expect(asset.reported?).to be_falsey
     end
@@ -226,7 +226,7 @@ describe Asset do
 
     it 'should not perform actions that are not valid' do
       expect { asset.perform_action('complete') }.to_not raise_error
-      expect { asset.perform_action('some_action') }.to raise_error(StateMachine::StateMachineError)
+      expect { asset.perform_action('some_action') }.to raise_error(StageMachine::StageMachineError)
     end
   end
 
@@ -234,8 +234,8 @@ describe Asset do
 
     let!(:workflow1) { create(:workflow, name: 'Workflow1') }
     let!(:workflow2) { create(:workflow, name: 'Workflow2') }
-    let!(:in_progress) { create :state, name: 'in_progress' }
-    let!(:completed) { create :state, name: 'completed' }
+    let!(:in_progress) { create :stage, name: 'in_progress' }
+    let!(:completed) { create :stage, name: 'completed' }
     let!(:cost_code) { create :cost_code}
     let!(:asset1) { create :asset, workflow: workflow1, study: 'Study1', project: 'Project1' }
     let!(:asset2) { create :asset, workflow: workflow1, study: 'Study1', project: 'Project2', cost_code: cost_code }

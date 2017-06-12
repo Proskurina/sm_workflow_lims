@@ -6,11 +6,11 @@ module Presenter::AssetPresenter
 
     attr_reader :search, :assets, :total
 
-    def initialize(found_assets,search=nil,state=nil)
+    def initialize(found_assets,search=nil,stage=nil)
       @assets = found_assets.group_by {|a| a.asset_type.name}.tap {|h| h.default = [] }
       @total  = found_assets.length
       @search = search
-      @state  = state.name if state
+      @stage  = stage.name if stage
     end
 
     def asset_identifiers
@@ -50,8 +50,8 @@ module Presenter::AssetPresenter
       'None'
     end
 
-    def state
-      @state.humanize
+    def stage
+      @stage.humanize
     end
 
     def action
@@ -59,7 +59,7 @@ module Presenter::AssetPresenter
         'volume_check' => 'check_volume',
         'quant' => 'complete',
         'report_required' => 'report'
-      }[@state]
+      }[@stage]
     end
 
     def action_button
@@ -67,7 +67,7 @@ module Presenter::AssetPresenter
         'volume_check' => 'Volume checked selected',
         'quant' => 'Completed selected',
         'report_required' => 'Reported selected'
-      }[@state].tap do |button|
+      }[@stage].tap do |button|
         yield button if button.present?
       end
     end

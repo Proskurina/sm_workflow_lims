@@ -4,7 +4,7 @@ require 'rails_helper'
 feature 'can create workflow', js: true do
 
   scenario 'can create workflow' do
-    create :state, name: 'in_progress'
+    create :stage, name: 'in_progress'
     visit '/'
     click_on 'Admin'
     find("a", text: "Create a new workflow").click
@@ -27,7 +27,7 @@ feature 'can create workflow', js: true do
   end
 
   scenario 'can update workflow' do
-    create :state, name: 'in_progress'
+    create :stage, name: 'in_progress'
     create :workflow, name: 'Workflow1'
     create :workflow, name: 'Workflow2'
     visit '/'

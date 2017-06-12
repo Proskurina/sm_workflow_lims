@@ -1,4 +1,4 @@
-class State < ActiveRecord::Base
+class Stage < ActiveRecord::Base
   has_many :events
   has_many :workflows
 

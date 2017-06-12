@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170411114800) do
+ActiveRecord::Schema.define(version: 20170612120722) do
 
   create_table "asset_types", force: :cascade do |t|
     t.string   "name",                 limit: 255,                          null: false
@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(version: 20170411114800) do
 
   create_table "events", force: :cascade do |t|
     t.integer  "asset_id",   limit: 4, null: false
-    t.integer  "state_id",   limit: 4, null: false
+    t.integer  "stage_id",   limit: 4, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -72,7 +72,7 @@ ActiveRecord::Schema.define(version: 20170411114800) do
     t.string "name", limit: 255
   end
 
-  create_table "states", force: :cascade do |t|
+  create_table "stages", force: :cascade do |t|
     t.string   "name",       limit: 255, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -85,10 +85,10 @@ ActiveRecord::Schema.define(version: 20170411114800) do
     t.datetime "updated_at"
     t.boolean  "reportable",                   default: false, null: false
     t.integer  "turn_around_days", limit: 4
-    t.integer  "initial_state_id", limit: 4
+    t.integer  "initial_stage_id", limit: 4
   end
 
-  add_index "workflows", ["initial_state_id"], name: "index_workflows_on_initial_state_id", using: :btree
+  add_index "workflows", ["initial_stage_id"], name: "index_workflows_on_initial_stage_id", using: :btree
 
   add_foreign_key "assets", "asset_types"
   add_foreign_key "assets", "batches"

@@ -24,7 +24,7 @@ describe Batch::Creator do
   end
 
   it 'should create the right batch and the right assets' do
-    state = create :state, name: 'in_progress'
+    stage = create :stage, name: 'in_progress'
     assets = [{type: "Plate", identifier: "test", sample_count: "25"},
              {type: "Plate", identifier: "test2", sample_count: "10"},
              {type: "Plate", identifier: "test3", sample_count: "96"}]
@@ -43,7 +43,7 @@ describe Batch::Creator do
     expect(Asset.count).to eq 0
     batch_creator.create!
     expect(Asset.count).to eq 3
-    expect(Asset.last.current_state). to eq state.name
+    expect(Asset.last.current_stage). to eq stage.name
   end
 
   after do

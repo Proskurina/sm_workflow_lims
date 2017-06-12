@@ -1,3 +1,4 @@
+
 require 'rails_helper'
 require './app/presenters/report/show'
 require './spec/presenters/shared_presenter_behaviour'
@@ -5,7 +6,7 @@ require './spec/presenters/shared_presenter_behaviour'
 describe Presenter::ReportPresenter::Show do
   let!(:workflow) { create(:workflow, name: "Workflow") }
   let!(:report) {Report.new(workflow: workflow, start_date: "01/04/2017", end_date: "15/04/2017")}
-  let!(:completed) { create :state, name: 'completed' }
+  let!(:completed) { create :stage, name: 'completed' }
   let(:asset1) { create :asset, workflow: workflow, study: 'Study1', project: 'Project1' }
   let(:asset2) { create :asset, workflow: workflow, study: 'Study1', project: 'Project2', cost_code: (create :cost_code, name: 'A1') }
   let(:presenter) { Presenter::ReportPresenter::Show.new(report) }

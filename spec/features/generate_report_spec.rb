@@ -5,8 +5,8 @@ feature 'can generate report', js: true do
 
   let!(:workflow1) { create(:workflow, name: 'Workflow1') }
   let!(:workflow2) { create(:workflow, name: 'Workflow2') }
-  let!(:in_progress) { create :state, name: 'in_progress' }
-  let!(:completed) { create :state, name: 'completed' }
+  let!(:in_progress) { create :stage, name: 'in_progress' }
+  let!(:completed) { create :stage, name: 'completed' }
   let!(:asset1) { create :asset, workflow: workflow1, study: 'Study1', project: 'Project1' }
   let!(:asset2) { create :asset, workflow: workflow1, study: 'Study1', project: 'Project2', cost_code: (create :cost_code, name: 'A1') }
   let!(:asset3) { create :asset, workflow: workflow2, study: 'Study1', project: 'Project2' }

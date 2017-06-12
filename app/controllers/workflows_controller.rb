@@ -34,7 +34,7 @@ class WorkflowsController < ApplicationController
     { name:             params[:name],
     has_comment:      params[:hasComment] || false,
     reportable:       params[:reportable] || false,
-    initial_state_name:    params[:initial_state_name],
+    initial_stage_name:    params[:initial_stage_name],
     turn_around_days: turn_around_days }
   end
 

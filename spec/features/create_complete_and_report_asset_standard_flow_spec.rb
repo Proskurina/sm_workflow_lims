@@ -6,12 +6,12 @@ feature 'create complete and report assets within standard flow', js: true do
   let!(:asset_type) { create(:asset_type, name: 'Tube', identifier_type: 'ID') }
   let!(:workflow1) { create(:workflow, name: 'Workflow') }
   let!(:workflow2) { create(:workflow_reportable, name: 'Reportable workflow') }
-  let!(:in_progress) { create :state, name: 'in_progress' }
-  let!(:volume_check) { create :state, name: 'volume_check' }
-  let!(:quant) { create :state, name: 'quant' }
-  let!(:report_required) { create :state, name: 'report_required' }
-  let!(:completed) { create :state, name: 'completed' }
-  let!(:reported) { create :state, name: 'reported' }
+  let!(:in_progress) { create :stage, name: 'in_progress' }
+  let!(:volume_check) { create :stage, name: 'volume_check' }
+  let!(:quant) { create :stage, name: 'quant' }
+  let!(:report_required) { create :stage, name: 'report_required' }
+  let!(:completed) { create :stage, name: 'completed' }
+  let!(:reported) { create :stage, name: 'reported' }
 
   scenario 'can create and complete a non-reportable asset' do
     visit '/'
