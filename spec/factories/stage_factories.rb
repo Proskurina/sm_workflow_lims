@@ -1,7 +1,7 @@
 FactoryGirl.define do
 
   sequence :stage_name do |n|
-    "Stage #{n}"
+    "stage_#{n}"
   end
 
   factory :stage do

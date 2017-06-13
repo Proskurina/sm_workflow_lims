@@ -10,9 +10,4 @@ describe Stage do
     expect(stage.valid?).to be true
   end
 
-  it 'should know if it is default' do
-    expect(stage.default?).to be_falsey
-  end
-
-
 end

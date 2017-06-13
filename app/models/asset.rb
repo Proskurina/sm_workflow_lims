@@ -88,7 +88,7 @@ class Asset < ActiveRecord::Base
   end
 
   def create_initial_event
-    events.create!(stage: workflow.initial_stage, created_at: begun_at)
+    events.create!(stage: workflow.first_stage, created_at: begun_at)
   end
 
   class AssetAction
