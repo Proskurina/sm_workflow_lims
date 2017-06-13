@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170612120722) do
+ActiveRecord::Schema.define(version: 20170612145759) do
 
   create_table "asset_types", force: :cascade do |t|
     t.string   "name",                 limit: 255,                          null: false
@@ -78,6 +78,22 @@ ActiveRecord::Schema.define(version: 20170612120722) do
     t.datetime "updated_at"
   end
 
+  create_table "team_stages", force: :cascade do |t|
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.integer  "team_id",    limit: 4
+    t.integer  "stage_id",   limit: 4
+  end
+
+  add_index "team_stages", ["stage_id"], name: "index_team_stages_on_stage_id", using: :btree
+  add_index "team_stages", ["team_id"], name: "index_team_stages_on_team_id", using: :btree
+
+  create_table "teams", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
   create_table "workflows", force: :cascade do |t|
     t.string   "name",             limit: 255,                 null: false
     t.boolean  "has_comment",                  default: false, null: false
@@ -86,9 +102,11 @@ ActiveRecord::Schema.define(version: 20170612120722) do
     t.boolean  "reportable",                   default: false, null: false
     t.integer  "turn_around_days", limit: 4
     t.integer  "initial_stage_id", limit: 4
+    t.integer  "team_id",          limit: 4
   end
 
   add_index "workflows", ["initial_stage_id"], name: "index_workflows_on_initial_stage_id", using: :btree
+  add_index "workflows", ["team_id"], name: "index_workflows_on_team_id", using: :btree
 
   add_foreign_key "assets", "asset_types"
   add_foreign_key "assets", "batches"
