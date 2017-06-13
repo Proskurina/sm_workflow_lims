@@ -35,7 +35,7 @@ class Presenter
     end
 
     def each_workflow
-      Workflow.all.includes(:initial_stage).each do |workflow|
+      Workflow.all.includes(:team).each do |workflow|
         yield(workflow.name, workflow.has_comment, workflow.id, workflow.reportable, workflow.humanized_team_name, workflow.turn_around_days)
       end
     end

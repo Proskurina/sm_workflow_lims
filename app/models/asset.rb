@@ -23,10 +23,6 @@ class Asset < ActiveRecord::Base
   delegate :identifier_type, to: :asset_type
   default_scope { includes(:workflow,:asset_type,:comment,:batch, :pipeline_destination, events: :stage) }
 
-  def remove_comment
-    comment.destroy
-  end
-
   def self.in_stage(stage)
     if stage.present?
       joins(:events)
@@ -44,11 +40,6 @@ class Asset < ActiveRecord::Base
       all
     end
   end
-
-  def set_begun_at
-    self.begun_at ||= self.created_at
-  end
-  private :set_begun_at
 
   # returns an array of hashes
   def self.generate_report_data(start_date, end_date, workflow)
@@ -89,6 +80,16 @@ class Asset < ActiveRecord::Base
 
   def create_initial_event
     events.create!(stage: workflow.first_stage, created_at: begun_at)
+  end
+
+  def remove_comment
+    comment.destroy
+  end
+
+  private
+
+  def set_begun_at
+    self.begun_at ||= self.created_at
   end
 
   class AssetAction
